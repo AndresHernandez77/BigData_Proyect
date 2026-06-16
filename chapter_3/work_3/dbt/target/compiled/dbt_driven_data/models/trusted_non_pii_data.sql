@@ -1,9 +1,4 @@
-{{ config(
-    materialized='table',
-    schema='trusted',
-    alias='non_pii_data',
-    tags=['trusted']
-)}}
+
 
 WITH source_data AS(
     SELECT 
@@ -23,14 +18,14 @@ WITH source_data AS(
         fnu.download_speed,
         fnu.upload_speed,
         fnu.consumed_traffic
-    FROM {{source('staging_source','fact_network_usage')}} fnu
-    JOIN {{source('staging_source','dim_address')}}  da
+    FROM "airflow"."driven_staging"."fact_network_usage" fnu
+    JOIN "airflow"."driven_staging"."dim_address"  da
         ON fnu.unique_id = da.unique_id
-    JOIN {{source('staging_source','dim_date')}}  dd
+    JOIN "airflow"."driven_staging"."dim_date"  dd
         ON da.unique_id = dd.unique_id
-    JOIN {{source('staging_source','dim_finance')}}  df
+    JOIN "airflow"."driven_staging"."dim_finance"  df
         ON dd.unique_id = df.unique_id
-    JOIN {{source('staging_source','dim_person')}}  dp
+    JOIN "airflow"."driven_staging"."dim_person"  dp
         ON df.unique_id = dp.unique_id
 )
 

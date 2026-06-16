@@ -1,9 +1,14 @@
-{{ config(
-    materialized='table',
-    schema='trusted',
-    alias='pii_data',
-    tags=['trusted']
-)}}
+
+  
+    
+
+  create  table "airflow"."driven_trusted"."pii_data__dbt_tmp"
+  
+  
+    as
+  
+  (
+    
 
 WITH source_data AS(
     SELECT 
@@ -23,16 +28,18 @@ WITH source_data AS(
         fnu.download_speed,
         fnu.upload_speed,
         fnu.consumed_traffic
-    FROM {{source('staging_source','fact_network_usage')}} fnu
-    INNER JOIN {{source('staging_source','dim_address')}}  da
+    FROM "airflow"."driven_staging"."fact_network_usage" fnu
+    INNER JOIN "airflow"."driven_staging"."dim_address"  da
         ON fnu.unique_id = da.unique_id
-    INNER JOIN {{source('staging_source','dim_date')}}  dd
+    INNER JOIN "airflow"."driven_staging"."dim_date"  dd
         ON da.unique_id = dd.unique_id
-    INNER JOIN {{source('staging_source','dim_finance')}}  df
+    INNER JOIN "airflow"."driven_staging"."dim_finance"  df
         ON dd.unique_id = df.unique_id
-    INNER JOIN {{source('staging_source','dim_person')}}  dp
+    INNER JOIN "airflow"."driven_staging"."dim_person"  dp
         ON df.unique_id = dp.unique_id
 )
 
     SELECT *
     FROM source_data
+  );
+  
